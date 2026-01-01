@@ -1,8 +1,8 @@
 {
-  "name": "SiYuan",
-  "version": "3.1.15",
-  "description": "Refactor your thinking",
-  "homepage": "https://b3log.org/siyuan",
+  "name": "SiYuan-Password",
+  "version": "3.1.15-password-1.0.0",
+  "description": "SiYuan with password lock - Fork from appdev/siyuan-unlock",
+  "homepage": "https://github.com/yangpf5271/siyuan-password",
   "main": "./electron/main.js",
   "packageManager": "pnpm@9.12.1",
   "scripts": {
@@ -27,27 +27,38 @@
     "dist-linux-arm64": "electron-builder --arm64 --linux --config electron-builder-linux-arm64.yml --publish=never"
   },
   "keywords": [
+    "siyuan",
+    "password-lock",
+    "notebook",
     "markdown",
     "note-taking",
-    "notebook"
+    "fork"
   ],
   "author": {
-    "name": "Yunnan Liandi Technology Co., Ltd.",
-    "email": "845765@qq.com",
-    "url": "https://ld246.com"
+    "name": "yangpf5271",
+    "email": "yangpf5271@users.noreply.github.com",
+    "url": "https://github.com/yangpf5271"
   },
   "maintainers": [
     {
-      "name": "Liang Ding",
-      "email": "845765@qq.com",
-      "url": "https://ld246.com/member/88250"
-    },
-    {
-      "name": "Liyuan Li",
-      "email": "84588990@qq.com",
-      "url": "https://ld246.com/member/Vanessa"
+      "name": "yangpf5271",
+      "email": "yangpf5271@users.noreply.github.com",
+      "url": "https://github.com/yangpf5271"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangpf5271/siyuan-password.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yangpf5271/siyuan-password/issues"
+  },
+  "license": "AGPL-3.0",
+  "_forkedFrom": {
+    "name": "appdev/siyuan-unlock",
+    "url": "https://github.com/appdev/siyuan-unlock",
+    "originalAuthor": "Yunnan Liandi Technology Co., Ltd."
+  },
   "devDependencies": {
     "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^8.15.0",

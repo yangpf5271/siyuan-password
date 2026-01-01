@@ -1,0 +1,63 @@
+{
+  "name": "siyuan-password-workspace",
+  "version": "3.1.15-password-1.0.0",
+  "description": "SiYuan Password Workspace - Fork from appdev/siyuan-unlock with password lock feature",
+  "private": true,
+  "workspaces": [
+    "app"
+  ],
+  "scripts": {
+    "install": "cd app && pnpm install",
+    "apply-patches": "cd app && pnpm run apply-patches",
+    "dev": "cd app && pnpm run dev",
+    "start": "cd app && pnpm run start",
+    "build": "cd app && pnpm run build",
+    "tsc": "cd app && pnpm run tsc",
+    "lint": "cd app && pnpm run lint",
+    "dist-darwin": "cd app && pnpm run dist-darwin",
+    "dist-darwin-arm64": "cd app && pnpm run dist-darwin-arm64",
+    "dist-win": "cd app && pnpm run dist-win",
+    "dist-linux": "cd app && pnpm run dist-linux",
+    "dist-linux-arm64": "cd app && pnpm run dist-linux-arm64",
+    "dist-appx": "cd app && pnpm run dist-appx",
+    "sync-upstream": "bash scripts/sync-upstream.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangpf5271/siyuan-password.git"
+  },
+  "keywords": [
+    "siyuan",
+    "password-lock",
+    "notebook",
+    "markdown",
+    "note-taking",
+    "fork",
+    "workspace"
+  ],
+  "author": {
+    "name": "yangpf5271",
+    "email": "yangpf5271@users.noreply.github.com",
+    "url": "https://github.com/yangpf5271"
+  },
+  "maintainers": [
+    {
+      "name": "yangpf5271",
+      "email": "yangpf5271@users.noreply.github.com"
+    }
+  ],
+  "license": "AGPL-3.0",
+  "homepage": "https://github.com/yangpf5271/siyuan-password",
+  "bugs": {
+    "url": "https://github.com/yangpf5271/siyuan-password/issues"
+  },
+  "_forkedFrom": {
+    "name": "appdev/siyuan-unlock",
+    "url": "https://github.com/appdev/siyuan-unlock",
+    "originalAuthor": "Yunnan Liandi Technology Co., Ltd."
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

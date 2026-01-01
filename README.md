@@ -11,8 +11,8 @@
 
 在服务器上伺服思源最简单的方案是通过 Docker 部署。
 
-* 镜像名称 `apkdv/siyuan-unlock`
-* [镜像地址](https://hub.docker.com/r/apkdv/siyuan-unlock)
+* 镜像名称 `yangpf5271/siyuan-password`
+* [镜像地址](https://hub.docker.com/r/yangpf5271/siyuan-password)
 
 #### 文件结构
 
@@ -27,7 +27,7 @@
 
 入口点在构建 Docker 镜像时设置：`ENTRYPOINT ["/opt/siyuan/entrypoint.sh"]`。该脚本允许更改将在容器内运行的用户的 `PUID` 和 `PGID`。这对于解决从主机挂载目录时的权限问题尤为重要。`PUID` 和 `PGID` 可以作为环境变量传递，这样在访问主机挂载的目录时就能更容易地确保正确的权限。
 
-使用 `docker run apkdv/siyuan-unlock` 运行容器时，请带入以下参数：
+使用 `docker run yangpf5271/siyuan-password` 运行容器时，请带入以下参数：
 
 * `--workspace`：指定工作空间文件夹路径，在宿主机上通过 `-v` 挂载到容器中
 * `--accessAuthCode`：指定访问授权码
@@ -39,7 +39,7 @@ docker run -d \
   -v workspace_dir_host:workspace_dir_container \
   -p 6806:6806 \
   -e PUID=1001 -e PGID=1002 \
-  apkdv/siyuan-unlock \
+  yangpf5271/siyuan-password \
   --workspace=workspace_dir_container \
   --accessAuthCode=xxx
 ```
@@ -60,7 +60,7 @@ docker run -d \
   -v /siyuan/workspace:/siyuan/workspace \
   -p 6806:6806 \
   -e PUID=1001 -e PGID=1002 \
-  apkdv/siyuan-unlock \
+  yangpf5271/siyuan-password \
   --workspace=/siyuan/workspace/ \
   --accessAuthCode=xxx
 ```
@@ -73,7 +73,7 @@ docker run -d \
 version: "3.9"
 services:
   main:
-    image: apkdv/siyuan-unlock
+    image: yangpf5271/siyuan-password
     command: ['--workspace=/siyuan/workspace/', '--accessAuthCode=${AuthCode}']
     ports:
       - 6806:6806
@@ -133,8 +133,8 @@ chown -R 1001:1002 /siyuan/workspace
 <a title="Releases" target="_blank" href="https://github.com/siyuan-note/appdev/releases"><img src="https://img.shields.io/github/release/siyuan-note/siyuan.svg?style=flat-square&color=9CF"></a>
 <a title="Downloads" target="_blank" href="https://github.com/siyuan-note/appdev/releases"><img src="https://img.shields.io/github/downloads/siyuan-note/appdev/total.svg?style=flat-square&color=blueviolet"></a>
 <br>
-<a title="Docker Pulls" target="_blank" href="https://hub.docker.com/r/apkdv/siyuan-unlock"><img src="https://img.shields.io/docker/pulls/b3log/siyuan.svg?style=flat-square&color=green"></a>
-<a title="Docker Image Size" target="_blank" href="https://hub.docker.com/r/apkdv/siyuan-unlock"><img src="https://img.shields.io/docker/image-size/b3log/siyuan.svg?style=flat-square&color=ff96b4"></a>
+<a title="Docker Pulls" target="_blank" href="https://hub.docker.com/r/yangpf5271/siyuan-password"><img src="https://img.shields.io/docker/pulls/yangpf5271/siyuan-password.svg?style=flat-square&color=green"></a>
+<a title="Docker Image Size" target="_blank" href="https://hub.docker.com/r/yangpf5271/siyuan-password"><img src="https://img.shields.io/docker/image-size/yangpf5271/siyuan-password.svg?style=flat-square&color=ff96b4"></a>
 <a title="Hits" target="_blank" href="https://github.com/siyuan-note/appdev"><img src="https://hits.b3log.org/siyuan-note/siyuan.svg"></a>
 <br>
 <a title="AGPLv3" target="_blank" href="https://www.gnu.org/licenses/agpl-3.0.txt"><img src="http://img.shields.io/badge/license-AGPLv3-orange.svg?style=flat-square"></a>
@@ -153,13 +153,101 @@ chown -R 1001:1002 /siyuan/workspace
 
 ---
 
+## 项目说明
+
+### Fork 继承链
+
+本项目基于以下继承关系开发：
+
+```
+siyuan-note/siyuan (官方原版)
+    ↓
+appdev/siyuan-unlock (上游项目 - 解锁功能)
+    ↓
+yangpf5271/siyuan-password (本项目 - 密码锁功能)
+```
+
+**项目地址**:
+- **本项目**: https://github.com/yangpf5271/siyuan-password
+- **上游项目**: https://github.com/appdev/siyuan-unlock
+- **官方原版**: https://github.com/siyuan-note/siyuan
+
+### 核心原则
+
+⚠️ **重要**: 本项目遵循以下核心原则以减少上游同步冲突：
+
+1. **补丁文件保持 100% 一致**: 所有 `patches/` 目录下的补丁文件必须与上游 `appdev/siyuan-unlock` 保持完全一致
+2. **构建时应用补丁**: 补丁在打包/构建阶段自动应用，而非直接修改源码
+3. **独立插件开发**: 密码锁功能作为独立插件实现（`app/src/plugins/password-lock/`），而非补丁方式
+
+### 功能对比
+
+| 功能 | 官方版本 | siyuan-unlock | siyuan-password (本项目) |
+|------|----------|---------------|-------------------------|
+| 基础笔记功能 | ✅ | ✅ | ✅ |
+| VIP 功能解锁 | ❌ 需订阅 | ✅ 完全解锁 | ✅ 完全解锁 |
+| 云同步限制 | ⚠️ 需订阅 | ✅ 无限制 | ✅ 无限制 |
+| 禁用自动更新 | ❌ | ✅ | ✅ |
+| **笔记本/文档密码锁** | ❌ | ❌ | 🚧 **开发中** |
+| 密码保护级别 | N/A | N/A | 🚧 笔记本/文档级别 |
+| 恢复密钥系统 | N/A | N/A | 🚧 规划中 |
+
+**说明**:
+- ✅ = 已支持
+- ❌ = 不支持
+- ⚠️ = 部分支持或有限制
+- 🚧 = 开发中或规划中
+
+### 密码锁功能状态
+
+**当前状态**: 🚧 开发中（Phase 0 - 核心功能实现阶段）
+
+**预计发布**: 2026 年 Q2
+
+**功能规划**:
+- ✅ Phase 0: 核心密码管理和验证机制（进行中）
+- 🔜 Phase 1: UI 界面和用户交互
+- 🔜 Phase 2: 测试、优化和安全审计
+- 🔜 Phase 3: 正式发布
+
+详细设计文档参见：[`claudedocs/笔记加锁功能设计文档.md`](claudedocs/笔记加锁功能设计文档.md)
+
+### 上游同步
+
+本项目定期从 `appdev/siyuan-unlock` 同步最新更新。同步流程：
+
+```bash
+# 自动同步（推荐）
+./scripts/sync-upstream.sh
+
+# 手动同步
+git fetch upstream
+git merge upstream/master
+cd app && bash ../scripts/apply-patches.sh
+```
+
+**同步策略**:
+- 补丁文件冲突时，使用上游版本（`git checkout --theirs patches/`）
+- 重新应用所有补丁验证兼容性
+- 运行类型检查确保无破坏性变更
+
+详细流程参见：[`CONTRIBUTING.md`](CONTRIBUTING.md)
+
+---
+
 ## 目录
 
+* [📖 项目说明](#项目说明)
+  * [Fork 继承链](#fork-继承链)
+  * [核心原则](#核心原则)
+  * [功能对比](#功能对比)
+  * [密码锁功能状态](#密码锁功能状态)
+  * [上游同步](#上游同步)
 * [💡 简介](#-简介)
 * [🔮 特性](#-特性)
 * [🏗️ 架构和生态](#️-架构和生态)
 * [🚀 下载安装](#-下载安装)
-* [Docker 部署](#docker-部署)
+* [🐳 Docker 部署](#docker-部署)
 
 ---
 
@@ -227,7 +315,9 @@ chown -R 1001:1002 /siyuan/workspace
 
 ## 🚀 下载安装
 
-[GitHub](https://github.com/appdev/siyuan-unlock/releases)
+[GitHub Releases](https://github.com/yangpf5271/siyuan-password/releases)
+
+**注意**: 本项目基于 `appdev/siyuan-unlock` 开发。如需了解上游项目，请访问 [appdev/siyuan-unlock](https://github.com/appdev/siyuan-unlock/releases)。
 
 ## Docker 部署
 
@@ -235,8 +325,8 @@ chown -R 1001:1002 /siyuan/workspace
 
 在服务器上伺服思源最简单的方案是通过 Docker 部署。
 
-* 镜像名称 `apkdv/siyuan-unlock`
-* [镜像地址](https://hub.docker.com/r/apkdv/siyuan-unlock)
+* 镜像名称 `yangpf5271/siyuan-password`
+* [镜像地址](https://hub.docker.com/r/yangpf5271/siyuan-password)
 
 #### 文件结构
 
@@ -251,7 +341,7 @@ chown -R 1001:1002 /siyuan/workspace
 
 入口点在构建 Docker 镜像时设置：`ENTRYPOINT ["/opt/siyuan/entrypoint.sh"]`。该脚本允许更改将在容器内运行的用户的 `PUID` 和 `PGID`。这对于解决从主机挂载目录时的权限问题尤为重要。`PUID` 和 `PGID` 可以作为环境变量传递，这样在访问主机挂载的目录时就能更容易地确保正确的权限。
 
-使用 `docker run apkdv/siyuan-unlock` 运行容器时，请带入以下参数：
+使用 `docker run yangpf5271/siyuan-password` 运行容器时，请带入以下参数：
 
 * `--workspace`：指定工作空间文件夹路径，在宿主机上通过 `-v` 挂载到容器中
 * `--accessAuthCode`：指定访问授权码
@@ -263,7 +353,7 @@ docker run -d \
   -v workspace_dir_host:workspace_dir_container \
   -p 6806:6806 \
   -e PUID=1001 -e PGID=1002 \
-  apkdv/siyuan-unlock \
+  yangpf5271/siyuan-password \
   --workspace=workspace_dir_container \
   --accessAuthCode=xxx
 ```
@@ -284,7 +374,7 @@ docker run -d \
   -v /siyuan/workspace:/siyuan/workspace \
   -p 6806:6806 \
   -e PUID=1001 -e PGID=1002 \
-  apkdv/siyuan-unlock \
+  yangpf5271/siyuan-password \
   --workspace=/siyuan/workspace/ \
   --accessAuthCode=xxx
 ```
@@ -297,7 +387,7 @@ docker run -d \
 version: "3.9"
 services:
   main:
-    image: apkdv/siyuan-unlock
+    image: yangpf5271/siyuan-password
     command: ['--workspace=/siyuan/workspace/', '--accessAuthCode=${AuthCode}']
     ports:
       - 6806:6806

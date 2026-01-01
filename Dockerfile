@@ -35,7 +35,15 @@ RUN apk add --no-cache gcc musl-dev && \
     find /opt/siyuan/ -name .git | xargs rm -rf
 
 FROM alpine:latest
-LABEL maintainer="Liang Ding<845765@qq.com>"
+LABEL maintainer="yangpf5271 <yangpf5271@users.noreply.github.com>"
+LABEL description="SiYuan Password - Fork from appdev/siyuan-unlock with password lock feature"
+LABEL version="3.1.15-password-1.0.0"
+LABEL org.opencontainers.image.source="https://github.com/yangpf5271/siyuan-password"
+LABEL org.opencontainers.image.description="SiYuan with notebook/document-level password protection"
+LABEL org.opencontainers.image.authors="yangpf5271"
+LABEL org.opencontainers.image.url="https://github.com/yangpf5271/siyuan-password"
+LABEL org.opencontainers.image.licenses="AGPL-3.0"
+LABEL org.opencontainers.image.title="SiYuan-Password"
 
 WORKDIR /opt/siyuan/
 COPY --from=GO_BUILD /opt/siyuan/ /opt/siyuan/

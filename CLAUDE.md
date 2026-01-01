@@ -10,7 +10,62 @@
 **包管理器**: pnpm 9.12.1
 **构建工具**: Webpack 5
 **项目性质**: 思源笔记 Fork 版本，包含解锁功能补丁
-**Docker 镜像**: apkdv/siyuan-unlock
+**Docker 镜像**: yangpf5271/siyuan-password
+
+---
+
+## 项目贡献原则
+
+> 详细贡献指南参见 [CONTRIBUTING.md](CONTRIBUTING.md)
+
+### ⚠️ 核心原则（必须遵守）
+
+1. **补丁文件保持 100% 一致**
+   - `patches/siyuan/` 下的所有补丁文件必须与上游 `appdev/siyuan-unlock` 保持完全一致
+   - **禁止修改**: 不接受对补丁文件的任何修改
+   - **原因**: 减少上游同步冲突，保持项目可维护性
+   - **验证**: 使用 `git checkout --theirs patches/` 同步上游
+
+2. **插件化开发模式**
+   - 密码锁功能作为**独立插件**实现，位于 `app/src/plugins/password-lock/`
+   - **架构优势**: 与核心代码解耦，易于维护和测试
+   - **扩展性**: 通过插件 API 实现所有功能，避免直接修改核心代码
+
+3. **代码质量标准**
+   - 遵循 TypeScript/ESLint 规范
+   - 通过类型检查 (`pnpm run tsc`)
+   - 通过代码风格检查 (`pnpm run lint`)
+   - 保持代码可维护性和可读性
+
+### ✅ 欢迎的贡献类型
+
+- **密码锁功能改进**: Bug 修复、性能优化、新功能实现、UI/UX 改进
+- **文档完善**: README.md、CLAUDE.md、设计文档、代码注释
+- **测试用例**: 单元测试、集成测试、边缘用例测试、安全性测试
+- **国际化**: 多语言翻译、本地化支持
+
+### ❌ 不接受的贡献类型
+
+- ❌ **补丁文件修改**: 保持与上游一致原则
+- ❌ **核心代码直接修改**: 除非通过插件 API 无法实现
+
+### 提交规范
+
+**分支命名**:
+- `feature/功能名` - 新功能开发
+- `fix/bug名` - Bug 修复
+- `docs/文档名` - 文档改进
+- `test/测试名` - 测试用例添加
+- `refactor/重构名` - 代码重构
+
+**提交信息** (Conventional Commits):
+- `feat:` - 新功能
+- `fix:` - Bug 修复
+- `docs:` - 文档更新
+- `style:` - 代码格式（不影响功能）
+- `refactor:` - 代码重构
+- `test:` - 测试用例
+- `chore:` - 构建/工具配置
 
 ---
 
@@ -60,14 +115,14 @@ cd app && pnpm run tsc
 ### Docker 部署
 ```bash
 # 构建 Docker 镜像（自动应用补丁）
-docker build -t apkdv/siyuan-unlock .
+docker build -t yangpf5271/siyuan-password .
 
 # 运行容器
 docker run -d \
   -v /siyuan/workspace:/siyuan/workspace \
   -p 6806:6806 \
   -e PUID=1001 -e PGID=1002 \
-  apkdv/siyuan-unlock \
+  yangpf5271/siyuan-password \
   --workspace=/siyuan/workspace/ \
   --accessAuthCode=your_password
 ```
@@ -113,8 +168,16 @@ siyuan-password/
 ├── android/                      # Android 应用
 ├── scripts/                      # 构建和部署脚本
 ├── claudedocs/                   # 设计文档（Claude 专用）
-│   ├── 笔记加锁功能设计文档.md      # v2.1 核心设计（已验证）
-│   └── 技术实现细节补充文档.md      # 完整技术实现指南
+│   ├── README.md                # 📖 文档导航和版本说明（推荐先读）
+│   ├── v2.1/                    # v2.1 版本文档（已源码验证）
+│   │   ├── 笔记加锁功能设计文档.md      # 核心设计
+│   │   ├── 技术实现细节补充文档.md      # 完整技术实现指南
+│   │   └── 文档评估报告.md              # 文档质量评估
+│   ├── v3.0/                    # v3.0 版本文档（完整实施）
+│   │   ├── 密码锁功能完整实施文档.md    # 完整实施文档
+│   │   ├── 文档改进说明.md              # 改进说明
+│   │   └── 最终交付总结.md              # 交付总结
+│   └── 密码锁功能完整实施文档_v3.1修复版.md  # v3.1 修复版（最新 - 推荐）
 ├── Dockerfile                    # Docker 镜像构建配置
 ├── README.md                     # 用户文档（含 Docker 部署）
 └── CLAUDE.md                     # 本文档
@@ -200,8 +263,9 @@ window.siyuan.ws = new Model({
 
 ## 密码锁功能设计要点
 
-> 详细设计参见 `claudedocs/笔记加锁功能设计文档.md` (v2.1 - 已源码验证)
-> 完整技术实现参见 `claudedocs/技术实现细节补充文档.md`
+> 详细设计参见 `claudedocs/v2.1/笔记加锁功能设计文档.md` (v2.1 - 已源码验证)
+> 完整技术实现参见 `claudedocs/v2.1/技术实现细节补充文档.md`
+> 最新实施文档参见 `claudedocs/密码锁功能完整实施文档_v3.1修复版.md` (v3.1 - 推荐阅读)
 
 ### v2.1 版本更新要点（2025-12-30）
 
@@ -398,8 +462,9 @@ registerServiceWorker();
 | openFileById 函数 | `app/src/editor/util.ts:39` (Hook 拦截点) |
 | 后端云同步 | `kernel/repository.go` (自动同步 petal 路径) |
 | **设计文档** | |
-| 密码锁核心设计 | `claudedocs/笔记加锁功能设计文档.md` (v2.1) |
-| 技术实现细节 | `claudedocs/技术实现细节补充文档.md` (完整代码示例) |
+| 密码锁核心设计 | `claudedocs/v2.1/笔记加锁功能设计文档.md` (v2.1 - 已验证) |
+| 技术实现细节 | `claudedocs/v2.1/技术实现细节补充文档.md` (完整代码示例) |
+| **最新实施文档** | `claudedocs/密码锁功能完整实施文档_v3.1修复版.md` (v3.1 - **推荐**) |
 | **补丁文件** | |
 | 默认配置修改 | `patches/siyuan/default-config.patch` |
 | 禁用自动更新 | `patches/siyuan/disable-update.patch` |
@@ -448,8 +513,9 @@ registerServiceWorker();
 
 ## 下一步开发计划
 
-> 详见 `claudedocs/笔记加锁功能设计文档.md` v2.1 版本
-> 完整技术实现参见 `claudedocs/技术实现细节补充文档.md`
+> 详见 `claudedocs/v2.1/笔记加锁功能设计文档.md` v2.1 版本
+> 完整技术实现参见 `claudedocs/v2.1/技术实现细节补充文档.md`
+> 最新实施文档参见 `claudedocs/密码锁功能完整实施文档_v3.1修复版.md` (v3.1)
 
 ### 开发路线图（优化后：9.5 周）
 
@@ -568,13 +634,30 @@ registerServiceWorker();
 
 ### 🔧 项目特定资源
 
-- **Docker 镜像**: [apkdv/siyuan-unlock](https://hub.docker.com/r/apkdv/siyuan-unlock)
+- **Docker 镜像**: [yangpf5271/siyuan-password](https://hub.docker.com/r/yangpf5271/siyuan-password)
 - **项目 README**: [README.md](README.md) - 用户使用文档
 - **Docker 部署文档**: [README.md](README.md#docker-部署) - Docker 部署详细说明
 
 ### 📖 本项目的设计文档
 
-1. **核心设计文档** (claudedocs/笔记加锁功能设计文档.md)
+#### v3.1 版本（最新 - 推荐阅读）
+
+**密码锁功能完整实施文档_v3.1修复版** (`claudedocs/密码锁功能完整实施文档_v3.1修复版.md`)
+- 完整的插件实现代码
+- 修复了 v3.0 中的数据库路径问题
+- 包含完整的测试用例
+- 生产就绪的实施指南
+
+#### v3.0 版本（完整实施）
+
+**密码锁功能完整实施文档** (`claudedocs/v3.0/密码锁功能完整实施文档.md`)
+- 完整的功能实施方案
+- 详细的代码实现
+- UI 组件和交互设计
+
+#### v2.1 版本（源码验证）
+
+1. **核心设计文档** (`claudedocs/v2.1/笔记加锁功能设计文档.md`)
    - 功能概述和架构设计
    - 数据结构和表定义
    - 密码验证流程
@@ -583,7 +666,7 @@ registerServiceWorker();
    - 开发计划（Phase 0-3）
    - ✅ 已通过源码验证
 
-2. **技术实现细节** (claudedocs/技术实现细节补充文档.md)
+2. **技术实现细节** (`claudedocs/v2.1/技术实现细节补充文档.md`)
    - 完整的代码实现示例
    - DatabaseService 实现（CRUD 操作）
    - PasswordManager 核心逻辑
@@ -594,6 +677,10 @@ registerServiceWorker();
    - 错误处理和边缘用例
    - 性能优化建议
    - 测试计划和安全审计清单
+
+3. **文档评估报告** (`claudedocs/v2.1/文档评估报告.md`)
+   - 文档质量评估
+   - 改进建议和优先级
 
 ### 🎯 关键概念速查
 
@@ -614,7 +701,7 @@ registerServiceWorker();
 
 对于 siyuan-password 项目的问题：
 1. 查阅本文档 (CLAUDE.md) 的对应章节
-2. 查阅详细设计文档 (claudedocs/*.md)
+2. 查阅详细设计文档 (`claudedocs/v2.1/*.md` 或 `claudedocs/密码锁功能完整实施文档_v3.1修复版.md`)
 3. 查阅源码注释和 TypeScript 类型定义
 4. 参考思源笔记官方 API 文档
 
@@ -634,7 +721,7 @@ registerServiceWorker();
 7. ✅ 澄清源码验证结果和关键决策的依据
 
 **新增文档**:
-- `claudedocs/技术实现细节补充文档.md` - 完整的代码实现指南
+- `claudedocs/v2.1/技术实现细节补充文档.md` - 完整的代码实现指南
   - 插件入口点实现
   - 数据库服务实现（500+ 行代码）
   - 密码管理器实现（700+ 行代码）
@@ -648,12 +735,16 @@ registerServiceWorker();
   - 安全审计清单
 
 **设计文档更新**:
-- `claudedocs/笔记加锁功能设计文档.md` 升级到 v2.1
+- `claudedocs/v2.1/笔记加锁功能设计文档.md` 升级到 v2.1
   - 源码验证标记 ✅/❌
   - v2.1 版本更新日志
   - 简化后的架构（移除嵌套设计）
   - 明确的 Hook 拦截点说明
   - 自动云同步流程确认
+
+**后续版本**:
+- `claudedocs/v3.0/` - v3.0 完整实施文档
+- `claudedocs/密码锁功能完整实施文档_v3.1修复版.md` - v3.1 修复版（**推荐使用**）
 
 ### v1.0 (2025-12-30) - 初始版本
 
