@@ -1,6 +1,6 @@
 {
   "name": "siyuan-password-workspace",
-  "version": "3.1.15-password-1.0.0",
+  "version": "3.5.2-password-1.0.0",
   "description": "SiYuan Password Workspace - Fork from appdev/siyuan-unlock with password lock feature",
   "private": true,
   "workspaces": [

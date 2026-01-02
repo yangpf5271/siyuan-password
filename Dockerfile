@@ -45,7 +45,7 @@ RUN apk add --no-cache gcc musl-dev && \
 FROM alpine:latest
 LABEL maintainer="yangpf5271 <yangpf5271@users.noreply.github.com>"
 LABEL description="SiYuan Password - Fork from appdev/siyuan-unlock with password lock feature"
-LABEL version="3.1.15-password-1.0.0"
+LABEL version="3.5.2-password-1.0.0"
 LABEL org.opencontainers.image.source="https://github.com/yangpf5271/siyuan-password"
 LABEL org.opencontainers.image.description="SiYuan with notebook/document-level password protection"
 LABEL org.opencontainers.image.authors="yangpf5271"
